@@ -7,6 +7,14 @@ var FPS = 0;
 var players = [];
 var player_sprite;
 
+//physics
+var Engine = Matter.Engine;
+var World = Matter.World;
+var Bodies = Matter.Bodies;
+var engine;
+var world;
+
+
 function Awake()
 {
     player_sprite = new Sprite("Images/g4502.png",{
@@ -18,9 +26,16 @@ function Awake()
 
 function Start()
 {
-    var new_player = new Player(map_width/2,map_height/2);
+    //physics
+    engine = Engine.create();
+    world = engine.world;
+    Engine.run(engine);
+    
+
+    var new_player = new Player(map_width/2,map_height/2,128,128);
     players.push(new_player);
     Update();
+
 }
 
 function Update()
@@ -34,18 +49,21 @@ function Update()
     requestAnimationFrame(Update);
 }
 
-function Player(x,y)
+function Player(x,y,width,height)
 {
     this.x = x;
     this.y = y;
+    this.body = Bodies.rectangle(this.x,this.y,this.width,this.height); //physics
     this.sprite = player_sprite;
+    World.add(world,this.body);
     this.update = function()
     {
 
     }
     this.draw = function()
     {
-        this.sprite.draw(this.x-this.sprite.width/2,this.y-this.sprite.height/2);
+        this.position = this.body.position;
+        this.sprite.draw(this.position.x-this.sprite.width/2,this.position.y-this.sprite.height/2);
     }
 }
 
